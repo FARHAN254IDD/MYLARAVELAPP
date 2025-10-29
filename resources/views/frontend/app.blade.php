@@ -17,6 +17,10 @@
                 <li><a href="/blog" class="hover:text-blue-500">Blog</a></li>
                 <li><a href="/about" class="hover:text-blue-500">About</a></li>
                 <li><a href="/contact" class="hover:text-blue-500">Contact</a></li>
+                <!-- <li><a href="{{ route('services.index') }}">service</a></li> -->
+
+                <li><a href="/login" class="hover:text-blue-500">Login</a></li>
+                <li><a href="/register" class="hover:text-blue-500">Register</a></li>
             </ul>
         </div>
     </nav>
