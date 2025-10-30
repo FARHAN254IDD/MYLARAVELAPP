@@ -58,6 +58,13 @@ Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::middleware('auth', 'verified')->prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
+
+    //  Route::get('/admin/dasboard', function () {
+//      return 'Welcome, Admin!';
+//  })->middleware(['auth', 'admin']);
+
+
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -69,3 +76,5 @@ Route::middleware('auth', 'verified')->prefix('admin')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+
