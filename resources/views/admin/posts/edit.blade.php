@@ -4,7 +4,7 @@
 @section('page_title', 'Edit Post')
 
 @section('content')
-<form action="{{ route('posts.update', $post) }}" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded-xl shadow space-y-4">
+<form action="{{ route('admin.posts.update', $post) }}" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded-xl shadow space-y-4">
   @csrf
   @method('PUT')
 
@@ -22,7 +22,7 @@
 
   <div>
     <label class="block text-sm font-medium">Price (Ksh)</label>
-    <input type="number" name="price" step="0.01" class="w-full border rounded-lg p-2" required>
+    <input type="number" step="0.01" name="price" value="{{ old('price', $post->price) }}" class="w-full border-gray-300 rounded-lg" required>
     @error('price') <p class="text-red-600 text-sm mt-1">{{ $message }}</p> @enderror
   </div>
 

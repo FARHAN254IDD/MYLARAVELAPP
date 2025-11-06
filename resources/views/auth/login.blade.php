@@ -24,6 +24,21 @@
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
+
+        <!-- Role Selection -->
+<div class="mt-4">
+    <x-input-label for="role" :value="__('Login as')" />
+    <select id="role" name="role" class="block mt-1 w-full border-gray-300 rounded-md shadow-sm" required>
+        <option value="">-- Select Role --</option>
+        <option value="user">User</option>
+        <option value="admin">Admin</option>
+        <option value="blogger">Blogger</option>
+        <option value="tester">Tester</option>
+    </select>
+    <x-input-error :messages="$errors->get('role')" class="mt-2" />
+</div>
+
+
         <!-- Remember Me -->
         <div class="block mt-4">
             <label for="remember_me" class="inline-flex items-center">

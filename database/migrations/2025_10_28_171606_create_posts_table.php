@@ -14,16 +14,17 @@ return new class extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->text('content');
             $table->decimal('price', 10, 2)->default(0);
+            $table->text('content');
             $table->string('image')->nullable();
+            $table->unsignedBigInteger('category_id')->nullable();
+            $table->bigInteger('views')->unsigned()->default(0);
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
+
+
     public function down(): void
     {
         Schema::dropIfExists('posts');

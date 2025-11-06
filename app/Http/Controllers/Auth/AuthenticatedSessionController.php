@@ -25,12 +25,39 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        // $request->authenticate();
 
-        $request->session()->regenerate();
+        // $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        // return redirect()->intended(RouteServiceProvider::HOME);
+
+
+        $credentials = $request->only('email', 'password', 'role');
+
+    $user = \App\Models\User::where('email', $credentials['email'])
+        ->where('role', $credentials['role'])
+        ->first();
+
+    if (! $user || ! \Illuminate\Support\Facades\Hash::check($credentials['password'], $user->password)) {
+        return back()->withErrors([
+            'email' => 'These credentials do not match our records or role.',
+        ]);
     }
+
+    Auth::login($user);
+
+    // Redirect by role
+    switch ($user->role) {
+        case 'admin':
+            return redirect()->route('admin.dashboard');
+        case 'blogger':
+            return redirect()->route('blogger.dashboard');
+        case 'tester':
+            return redirect()->route('tester.dashboard');
+        default:
+            return redirect()->route('dashboard');
+    }
+}
 
     /**
      * Destroy an authenticated session.

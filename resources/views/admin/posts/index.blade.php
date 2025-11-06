@@ -5,7 +5,7 @@
 
 @section('content')
 <div class="flex justify-between mb-4">
-  <a href="{{ route('posts.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow">+ Add New Post</a>
+  <a href="{{ route('admin.posts.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow">+ Add New Post</a>
 </div>
 
 @if(session('success'))
@@ -21,12 +21,13 @@
         <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="rounded-lg mb-3 h-48 w-full object-cover">
       @endif
       <h3 class="font-semibold text-lg mb-2">{{ $post->title }}</h3>
+      <p class="text-sm text-gray-500 mb-2"> Ksh {{ number_format($post->price, 2) }}</p>
       <p class="text-gray-600 text-sm flex-grow">{{ Str::limit($post->content, 100) }}</p>
 
       <div class="flex justify-between mt-4">
-        <a href="{{ route('posts.edit', $post) }}" class="text-blue-600 hover:underline">Edit</a>
+        <a href="{{ route('admin.posts.edit', $post) }}" class="text-blue-600 hover:underline">Edit</a>
 
-        <form action="{{ route('posts.destroy', $post) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this post?');">
+        <form action="{{ route('admin.posts.destroy', $post) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this post?');">
           @csrf
           @method('DELETE')
           <button type="submit" class="text-red-600 hover:underline">Delete</button>

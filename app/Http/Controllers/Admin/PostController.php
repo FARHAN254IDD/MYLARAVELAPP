@@ -34,6 +34,7 @@ class PostController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
             'content' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
@@ -44,7 +45,7 @@ class PostController extends Controller
 
         Post::create($validated);
 
-        return redirect()->route('posts.index')->with('success', 'Post created successfully.');
+        return redirect()->route('admin.posts.index')->with('success', 'Post created successfully.');
 
     }
 
@@ -71,6 +72,7 @@ class PostController extends Controller
     {
          $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
             'content' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
@@ -84,7 +86,7 @@ class PostController extends Controller
 
         $post->update($validated);
 
-        return redirect()->route('posts.index')->with('success', 'Post updated successfully!');
+        return redirect()->route('admin.posts.index')->with('success', 'Post updated successfully!');
     }
 
     /**
@@ -98,6 +100,6 @@ class PostController extends Controller
 
         $post->delete();
 
-        return redirect()->route('posts.index')->with('success', 'Post deleted successfully!');
+        return redirect()->route('admin.posts.index')->with('success', 'Post deleted successfully!');
     }
 }
