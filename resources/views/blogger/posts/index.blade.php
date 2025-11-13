@@ -28,9 +28,11 @@
                     @if ($post->price)
                         <p class="text-yellow-400 font-semibold mb-2">Ksh {{ number_format($post->price, 2) }}</p>
                     @endif
-                    <p class="text-sm {{ $post->status === 'approved' ? 'text-green-400' : 'text-yellow-400' }}">
-                        {{ ucfirst($post->status) }}
-                    </p>
+                    <span class="mt-3 inline-block px-2 py-1 text-xs font-semibold rounded
+                      {{ $post->status === 'approved' ? 'bg-green-700 text-green-100' :
+                         ($post->status === 'rejected' ? 'bg-red-700 text-red-100' : 'bg-yellow-600 text-yellow-100') }}">
+                      {{ ucfirst($post->status) }}
+                    </span>
                     <div class="mt-3 flex justify-between">
                         <a href="{{ route('blogger.posts.edit', $post) }}" class="bg-blue-600 px-3 py-1 rounded text-sm hover:bg-blue-700">✏️ Edit</a>
                         <form action="{{ route('blogger.posts.destroy', $post) }}" method="POST" onsubmit="return confirm('Are you sure?');">

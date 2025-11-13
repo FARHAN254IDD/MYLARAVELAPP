@@ -102,4 +102,46 @@ class PostController extends Controller
 
         return redirect()->route('admin.posts.index')->with('success', 'Post deleted successfully!');
     }
+
+  public function approve($id)
+{
+    $post = Post::findOrFail($id);
+    $post->status = 'approved';
+    $post->save();
+
+    // Optional: send notification to blogger
+    $user = $post->user;
+    $notifications = json_decode($user->notifications ?? '[]', true);
+    $notifications[] = [
+        'message' => "Your post '{$post->title}' has been approved!",
+        'type' => 'success',
+        'time' => now()->toDateTimeString(),
+    ];
+    $user->notifications = json_encode($notifications);
+    $user->save();
+
+    return back()->with('success', 'Post approved successfully.');
+}
+
+public function reject($id)
+{
+    $post = Post::findOrFail($id);
+    $post->status = 'rejected';
+    $post->save();
+
+    // Optional: send notification
+    $user = $post->user;
+    $notifications = json_decode($user->notifications ?? '[]', true);
+    $notifications[] = [
+        'message' => "Your post '{$post->title}' has been rejected.",
+        'type' => 'error',
+        'time' => now()->toDateTimeString(),
+    ];
+    $user->notifications = json_encode($notifications);
+    $user->save();
+
+    return back()->with('success', 'Post rejected successfully.');
+}
+
+
 }

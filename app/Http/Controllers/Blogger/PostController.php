@@ -79,6 +79,8 @@ class PostController extends Controller
             $validated['image'] = $request->file('image')->store('posts', 'public');
         }
 
+        $validated['status'] = 'pending';
+
         $post->update($validated);
 
         return redirect()->route('blogger.posts.index')->with('success', 'Post updated successfully!');

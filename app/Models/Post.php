@@ -14,11 +14,20 @@ class Post extends Model
         'content',
         'price',
         'image',
+        'user_id',
+        'status',
+
+
     ];
 
     public function comments()
 {
     return $this->hasMany(Comment::class);
 }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
 }

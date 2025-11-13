@@ -5,104 +5,102 @@
 
 @section('content')
 
+{{-- ✅ Notifications Dropdown --}}
+<div class="relative flex justify-end mb-6">
+    <div x-data="{ open: false }" class="relative">
+        @php
+            $notifications = json_decode(Auth::user()->notifications ?? '[]', true);
+        @endphp
 
+        <button @click="open = !open" class="relative flex items-center bg-gray-800 text-gray-100 px-4 py-2 rounded-lg shadow hover:bg-gray-700 focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405M19 13a7 7 0 10-14 0 7 7 0 0014 0z" />
+            </svg>
+            Notifications
+            @if(count($notifications) > 0)
+                <span class="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
+                    {{ count($notifications) }}
+                </span>
+            @endif
+        </button>
 
-{{-- Stats Grid with Inline Styles as Backup --}}
+        {{-- Dropdown Panel --}}
+        <div x-show="open" @click.away="open = false" x-transition
+             class="absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
+
+            <div class="p-4 border-b border-gray-100 flex justify-between items-center">
+                <h3 class="font-semibold text-gray-800">Recent Notifications</h3>
+                <form action="{{ route('blogger.notifications.clear') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="text-xs text-red-600 hover:underline">Clear All</button>
+                </form>
+            </div>
+
+            @if(count($notifications) > 0)
+                <div class="max-h-64 overflow-y-auto divide-y divide-gray-100">
+                    @foreach(array_reverse($notifications) as $note)
+                        <div class="p-4 flex items-start gap-3 {{ $note['type'] === 'success' ? 'bg-green-50' : 'bg-red-50' }}">
+                            <div class="flex-shrink-0 mt-1">
+                                @if($note['type'] === 'success')
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                @else
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                @endif
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-800">{{ $note['message'] }}</p>
+                                <span class="text-xs text-gray-500">{{ \Carbon\Carbon::parse($note['time'])->diffForHumans() }}</span>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="p-4 text-center text-gray-500 text-sm">No new notifications</div>
+            @endif
+        </div>
+    </div>
+</div>
+
+{{-- Stats Grid --}}
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-
     {{-- Total Posts --}}
-    <div style="background-color: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-            <div style="flex: 1;">
-                <p style="font-size: 14px; font-weight: 500; color: #64748b; margin-bottom: 4px;">Total Posts</p>
-                <h3 style="font-size: 30px; font-weight: bold; color: #0f172a; margin: 8px 0;">{{ $myPostsCount ?? 0 }}</h3>
-                <p style="font-size: 12px; color: #94a3b8; margin-top: 8px;">All your articles</p>
-            </div>
-            <div style="width: 56px; height: 56px; background-color: #dbeafe; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-                <svg style="width: 28px; height: 28px; color: #2563eb;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                </svg>
-            </div>
-        </div>
+    <div class="bg-white border border-gray-200 rounded-lg p-6 shadow">
+        <p class="text-sm font-medium text-gray-500 mb-1">Total Posts</p>
+        <h3 class="text-2xl font-bold text-gray-900 mb-1">{{ $myPostsCount ?? 0 }}</h3>
+        <p class="text-xs text-gray-400">All your articles</p>
     </div>
-
     {{-- Approved Posts --}}
-    <div style="background-color: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-            <div style="flex: 1;">
-                <p style="font-size: 14px; font-weight: 500; color: #64748b; margin-bottom: 4px;">Approved</p>
-                <h3 style="font-size: 30px; font-weight: bold; color: #0f172a; margin: 8px 0;">{{ $approvedPosts ?? 0 }}</h3>
-                <p style="font-size: 12px; color: #10b981; margin-top: 8px;">✓ Published</p>
-            </div>
-            <div style="width: 56px; height: 56px; background-color: #d1fae5; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-                <svg style="width: 28px; height: 28px; color: #059669;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-            </div>
-        </div>
+    <div class="bg-white border border-gray-200 rounded-lg p-6 shadow">
+        <p class="text-sm font-medium text-gray-500 mb-1">Approved</p>
+        <h3 class="text-2xl font-bold text-gray-900 mb-1">{{ $approvedPosts ?? 0 }}</h3>
+        <p class="text-xs text-green-600">✓ Published</p>
     </div>
-
     {{-- Pending Posts --}}
-    <div style="background-color: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-            <div style="flex: 1;">
-                <p style="font-size: 14px; font-weight: 500; color: #64748b; margin-bottom: 4px;">Pending</p>
-                <h3 style="font-size: 30px; font-weight: bold; color: #0f172a; margin: 8px 0;">{{ $pendingPosts ?? 0 }}</h3>
-                <p style="font-size: 12px; color: #f59e0b; margin-top: 8px;">⏱ Under review</p>
-            </div>
-            <div style="width: 56px; height: 56px; background-color: #fef3c7; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-                <svg style="width: 28px; height: 28px; color: #d97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-            </div>
-        </div>
+    <div class="bg-white border border-gray-200 rounded-lg p-6 shadow">
+        <p class="text-sm font-medium text-gray-500 mb-1">Pending</p>
+        <h3 class="text-2xl font-bold text-gray-900 mb-1">{{ $pendingPosts ?? 0 }}</h3>
+        <p class="text-xs text-yellow-600">⏱ Under review</p>
     </div>
-
     {{-- Comments --}}
-    <div style="background-color: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-            <div style="flex: 1;">
-                <p style="font-size: 14px; font-weight: 500; color: #64748b; margin-bottom: 4px;">Comments</p>
-                <h3 style="font-size: 30px; font-weight: bold; color: #0f172a; margin: 8px 0;">{{ $commentsCount ?? 0 }}</h3>
-                <p style="font-size: 12px; color: #94a3b8; margin-top: 8px;">Total engagement</p>
-            </div>
-            <div style="width: 56px; height: 56px; background-color: #f3e8ff; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-                <svg style="width: 28px; height: 28px; color: #9333ea;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                </svg>
-            </div>
-        </div>
+    <div class="bg-white border border-gray-200 rounded-lg p-6 shadow">
+        <p class="text-sm font-medium text-gray-500 mb-1">Comments</p>
+        <h3 class="text-2xl font-bold text-gray-900 mb-1">{{ $commentsCount ?? 0 }}</h3>
+        <p class="text-xs text-gray-400">Total engagement</p>
     </div>
-
 </div>
 
 {{-- Quick Actions --}}
-<div style="background-color: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-    <h2 style="font-size: 18px; font-weight: 600; color: #0f172a; margin-bottom: 16px;">Quick Actions</h2>
-    <div style="display: flex; flex-wrap: wrap; gap: 12px;">
-        <a href="{{ route('blogger.posts.create') }}"
-           style="display: inline-flex; align-items: center; padding: 10px 20px; background-color: #4f46e5; color: white; font-size: 14px; font-weight: 500; border-radius: 8px; text-decoration: none;">
-            + Create New Post
-        </a>
-        <a href="{{ route('blogger.posts.index') }}"
-           style="display: inline-flex; align-items: center; padding: 10px 20px; background-color: white; color: #334155; font-size: 14px; font-weight: 500; border-radius: 8px; border: 1px solid #cbd5e1; text-decoration: none;">
-            📄 View All Posts
-        </a>
-        <a href="{{ route('blogger.comments.index') }}"
-           style="display: inline-flex; align-items: center; padding: 10px 20px; background-color: white; color: #334155; font-size: 14px; font-weight: 500; border-radius: 8px; border: 1px solid #cbd5e1; text-decoration: none;">
-            💬 Manage Comments
-        </a>
+<div class="bg-white border border-gray-300 rounded-lg p-6 shadow">
+    <h2 class="font-semibold text-lg mb-4">Quick Actions</h2>
+    <div class="flex flex-wrap gap-3">
+        <a href="{{ route('blogger.posts.create') }}" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">+ Create New Post</a>
+        <a href="{{ route('blogger.posts.index') }}" class="px-4 py-2 border rounded hover:bg-gray-100">📄 View All Posts</a>
+        <a href="{{ route('blogger.comments.index') }}" class="px-4 py-2 border rounded hover:bg-gray-100">💬 Manage Comments</a>
     </div>
 </div>
 
 @endsection
-
-
-
-
-
-
-
-
-
-

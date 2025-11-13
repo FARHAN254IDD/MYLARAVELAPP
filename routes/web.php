@@ -9,7 +9,7 @@ use App\Http\Controllers\ContactController;
 
 use App\Http\Controllers\Admin\{
     DashboardController as AdminDashboardController,
-    PostController,
+    PostController as AdminPostController,
 
     UserController,
     CommentController,
@@ -56,7 +56,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
         // CRUD resources
-        Route::resource('posts', PostController::class);
+        Route::resource('posts', AdminPostController::class);
 
         Route::resource('users', UserController::class);
         Route::resource('comments', CommentController::class);
@@ -85,6 +85,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Export CSV
     Route::get('/reports/export/csv', [ReportController::class, 'exportCSV'])->name('reports.export.csv');
+
+    Route::post('/posts/{id}/approve', [AdminPostController::class, 'approve'])->name('posts.approve');
+    Route::post('/posts/{id}/reject', [AdminPostController::class, 'reject'])->name('posts.reject');
     });
 
     // 📝 Blogger routes
@@ -100,6 +103,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // profile
         Route::get('/profile', [BloggerProfileController::class, 'index'])->name('profile');
+         Route::post('/notifications/clear', [NotificationController::class, 'clear'])->name('notifications.clear');
     });
 
     // 🧪 Tester routes
