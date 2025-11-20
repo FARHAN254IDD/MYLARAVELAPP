@@ -7,6 +7,8 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\ContactController;
 
+use App\Http\Controllers\PublicPostController;
+
 use App\Http\Controllers\Admin\{
     DashboardController as AdminDashboardController,
     PostController as AdminPostController,
@@ -15,17 +17,23 @@ use App\Http\Controllers\Admin\{
     CommentController,
     SettingController,
     MediaController,
-    ReportController
+    ReportController,
+    PurchaseController
 };
 
 use App\Http\Controllers\Blogger\{
     DashboardController as BloggerDashboardController,
     PostController as BloggerPostController,
     CommentController as BloggerCommentController,
-    ProfileController as BloggerProfileController
+    ProfileController as BloggerProfileController,
+
 };
 use App\Http\Controllers\Tester\DashboardController as TesterDashboardController;
-use App\Http\Controllers\User\DashboardController as UserDashboardController;
+use App\Http\Controllers\User\{DashboardController as UserDashboardController,
+    PostController as UserPostController,
+
+
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -35,25 +43,55 @@ use App\Http\Controllers\User\DashboardController as UserDashboardController;
 */
 
 // 🌍 Public routes
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/blog', [BlogController::class, 'index'])->name('blog');
 Route::get('/blog/{id}', [BlogController::class, 'show'])->name('blog.show');
 Route::get('/about', [AboutController::class, 'index'])->name('about');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 
+
+Route::get('/posts', [PublicPostController::class, 'index'])->name('public.posts');
+    Route::get('/posts/{post}', [PublicPostController::class, 'show'])->name('public.post.show');
+
 // 🧑‍💻 Authenticated user routes
 Route::middleware(['auth', 'verified'])->group(function () {
 
+
+
+
+
     // User dashboard
+Route::middleware(['auth', 'user'])->prefix('user')->name('user.')->group(function () {
     Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
+
+    
+
+    // View all posts
+    Route::get('/posts', [UserPostController::class, 'index'])->name('posts');
+
+    // View single post
+    Route::get('/posts/{post}', [UserPostController::class, 'show'])->name('posts.show');
+
+    Route::get('/purchases', [UserDashboardController::class, 'purchases'])->name('purchases');
+
+    Route::get('/profile', [UserDashboardController::class, 'profile'])->name('profile');
+
+    Route::get('/settings', [UserDashboardController::class, 'settings'])->name('settings');
+
+
+
+});
+
 
     // 👑 Admin routes
     Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+
+        Route::get('/purchases', [PurchaseController::class, 'index'])->name('admin.purchases.index');
 
         // CRUD resources
         Route::resource('posts', AdminPostController::class);
@@ -97,6 +135,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Blogger posts
         Route::resource('posts', BloggerPostController::class);
+        Route::get('/posts/{post}', [BloggerPostController::class, 'show'])->name('posts.show');
 
         // Comments for blogger's posts
         Route::get('/comments', [BloggerCommentController::class, 'index'])->name('comments.index');
@@ -104,6 +143,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // profile
         Route::get('/profile', [BloggerProfileController::class, 'index'])->name('profile');
          Route::post('/notifications/clear', [NotificationController::class, 'clear'])->name('notifications.clear');
+
+
     });
 
     // 🧪 Tester routes

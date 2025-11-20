@@ -57,7 +57,7 @@ class RegisteredUserController extends Controller
                     case 'tester':
                         return redirect()->route('tester.dashboard');
                         default:
-                            return redirect()->route('dashboard');
+                            return redirect()->route('user.dashboard');
         }
 
         return redirect(RouteServiceProvider::HOME);

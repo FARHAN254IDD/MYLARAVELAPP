@@ -48,6 +48,27 @@ class PostController extends Controller
         return redirect()->route('blogger.posts.index')->with('success', 'Post created successfully!');
     }
 
+
+
+
+    public function show(Post $post)
+{
+    $user = auth()->user();
+
+    $hasPurchased = false;
+
+    if($post->price > 0) {
+        $hasPurchased = \App\Models\Purchase::where('user_id', $user->id)
+            ->where('post_id', $post->id)
+            ->where('status', 'paid')
+            ->exists();
+    }
+
+    return view('blogger.posts.show', compact('post', 'hasPurchased'));
+}
+
+
+
     // Edit post
     public function edit(Post $post)
     {

@@ -55,7 +55,7 @@ class AuthenticatedSessionController extends Controller
         case 'tester':
             return redirect()->route('tester.dashboard');
         default:
-            return redirect()->route('dashboard');
+            return redirect()->route('user.dashboard');
     }
 }
 
