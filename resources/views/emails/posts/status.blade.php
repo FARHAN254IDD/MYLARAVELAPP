@@ -6,7 +6,7 @@ Hello {{ $post->user->name }},
 Your post titled **"{{ $post->title }}"** has been **{{ $post->status }}** by the Admin.
 
 @if($post->status == 'approved')
-@component('mail::button', ['url' => url('/blog/'.$post->id)])
+@component('mail::button', ['url' => url('/posts/'.$post->id)])
 View Post
 @endcomponent
 @endif

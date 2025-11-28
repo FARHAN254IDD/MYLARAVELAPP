@@ -12,6 +12,7 @@ class VerifyCsrfToken extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        //
+        // Exclude MPESA callback endpoint so external POSTs from Safaricom aren't blocked.
+        'user/mpesa/callback',
     ];
 }

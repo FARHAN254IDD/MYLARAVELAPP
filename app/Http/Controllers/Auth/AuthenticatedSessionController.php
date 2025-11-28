@@ -32,31 +32,44 @@ class AuthenticatedSessionController extends Controller
         // return redirect()->intended(RouteServiceProvider::HOME);
 
 
-        $credentials = $request->only('email', 'password', 'role');
+    //     $credentials = $request->only('email', 'password', 'role');
 
-    $user = \App\Models\User::where('email', $credentials['email'])
-        ->where('role', $credentials['role'])
-        ->first();
+    // $user = \App\Models\User::where('email', $credentials['email'])
+    //     ->where('role', $credentials['role'])
+    //     ->first();
 
-    if (! $user || ! \Illuminate\Support\Facades\Hash::check($credentials['password'], $user->password)) {
-        return back()->withErrors([
-            'email' => 'These credentials do not match our records or role.',
-        ]);
-    }
+    // if (! $user || ! \Illuminate\Support\Facades\Hash::check($credentials['password'], $user->password)) {
+    //     return back()->withErrors([
+    //         'email' => 'These credentials do not match our records or role.',
+    //     ]);
+    // }
 
-    Auth::login($user);
+    // Auth::login($user);
 
-    // Redirect by role
-    switch ($user->role) {
-        case 'admin':
-            return redirect()->route('admin.dashboard');
-        case 'blogger':
-            return redirect()->route('blogger.dashboard');
-        case 'tester':
-            return redirect()->route('tester.dashboard');
-        default:
-            return redirect()->route('user.dashboard');
-    }
+
+    // switch ($user->role) {
+    //     case 'admin':
+    //         return redirect()->route('admin.dashboard');
+    //     case 'blogger':
+    //         return redirect()->route('blogger.dashboard');
+    //     case 'tester':
+    //         return redirect()->route('tester.dashboard');
+    //     default:
+    //         return redirect()->route('user.dashboard');
+
+
+
+    $request->authenticate();
+    $request->session()->regenerate();
+
+     $role = auth()->user()->role;
+
+    return match($role) {
+        'admin'   => redirect()->route('admin.dashboard'),
+        'blogger' => redirect()->route('blogger.dashboard'),
+        'tester'  => redirect()->route('tester.dashboard'),
+        default   => redirect()->route('user.dashboard'),
+    };
 }
 
     /**

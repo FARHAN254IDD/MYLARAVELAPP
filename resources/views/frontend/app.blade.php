@@ -11,10 +11,10 @@
     <!-- Navbar -->
     <nav class="bg-white shadow-md">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-blue-600">MyBlog</h1>
+            <h1 class="text-2xl font-bold text-blue-600">MyPosts</h1>
             <ul class="flex space-x-6">
                 <li><a href="/" class="hover:text-blue-500">Home</a></li>
-                <li><a href="/blog" class="hover:text-blue-500">Blog</a></li>
+                <li><a href="/posts" class="hover:text-blue-500">Posts</a></li>
                 <li><a href="/about" class="hover:text-blue-500">About</a></li>
                 <li><a href="/contact" class="hover:text-blue-500">Contact</a></li>
                 <!-- <li><a href="{{ route('services.index') }}">service</a></li> -->
@@ -32,7 +32,7 @@
     <!-- Footer -->
     <footer class="bg-blue-600 text-white py-6 mt-10">
         <div class="max-w-7xl mx-auto text-center">
-            <p class="text-sm">&copy; {{ date('Y') }} MyBlog. All Rights Reserved.</p>
+            <p class="text-sm">&copy; {{ date('Y') }} MyPosts. All Rights Reserved.</p>
             <div class="mt-3 flex justify-center space-x-5">
                 <a href="#" class="hover:text-gray-200">Facebook</a>
                 <a href="#" class="hover:text-gray-200">Twitter</a>

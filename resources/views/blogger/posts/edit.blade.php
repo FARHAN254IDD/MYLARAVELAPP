@@ -25,9 +25,31 @@
 
         <div class="mb-4">
             <label class="block mb-1 font-semibold">Image (optional)</label>
-            @if ($post->image)
-                <img src="{{ asset('storage/'.$post->image) }}" class="w-40 h-40 object-cover rounded mb-3">
-            @endif
+            @php
+                $img = $post->image ?? '';
+                $imgSrc = null;
+                if (preg_match('/^https?:\/\//i', $img)) {
+                    $imgSrc = $img;
+                } else {
+                    $candidate = storage_path('app/public/' . ltrim($img, '/'));
+                    if ($img && file_exists($candidate)) {
+                        $imgSrc = asset('storage/' . ltrim($img, '/'));
+                    }
+                    if (!$imgSrc) {
+                        $publicCandidate = public_path(ltrim($img, '/'));
+                        if ($img && file_exists($publicCandidate)) {
+                            $imgSrc = asset('/' . ltrim($img, '/'));
+                        }
+                    }
+                    if (!$imgSrc && $img) {
+                        $pub2 = public_path('images/' . basename($img));
+                        if (file_exists($pub2)) {
+                            $imgSrc = asset('images/' . basename($img));
+                        }
+                    }
+                }
+            @endphp
+            @include('components.post-image', ['image' => $post->image, 'alt' => $post->title, 'class' => 'w-40 h-40 object-cover rounded mb-3', 'placeholder' => 'w-40 h-40 bg-gray-100 flex items-center justify-center text-gray-400 rounded mb-3'])
             <input type="file" name="image" class="w-full text-gray-300">
         </div>
 

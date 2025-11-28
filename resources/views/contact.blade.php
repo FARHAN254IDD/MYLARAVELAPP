@@ -1,6 +1,6 @@
 @extends('frontend.app')
 
-@section('tittle', 'Contact')
+@section('title', 'Contact')
 
 @section('content')
 

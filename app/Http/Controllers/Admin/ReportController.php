@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Comment;
+use App\Models\UserPurchase;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -78,4 +79,17 @@ class ReportController extends Controller
 
         return response()->download($filename)->deleteFileAfterSend(true);
     }
+
+    public function allPurchases()
+{
+    $purchases = UserPurchase::with('user', 'post')->latest()->get();
+    return view('admin.reports.purchases', compact('purchases'));
+}
+
+public function downloadPurchasesPDF()
+{
+    $purchases = UserPurchase::with('user', 'post')->latest()->get();
+    $pdf = Pdf::loadView('admin.reports.purchases_pdf', compact('purchases'));
+    return $pdf->download('all_purchases.pdf');
+}
 }

@@ -14,7 +14,7 @@
             </p>
         </div>
 
-        <form action="{{ route('pay.stk', $post->id) }}" method="POST">
+        <form action="{{ route('user.posts.pay', $post->id) }}" method="POST">
             @csrf
             <button class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 text-lg font-semibold">
                 Buy Now with M-Pesa

@@ -24,9 +24,32 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         @foreach ($posts as $post)
             <div class="bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:scale-105 transition">
-                @if ($post->image)
-                    <img src="{{ asset('storage/'.$post->image) }}" class="w-full h-40 object-cover">
-                @endif
+                @php
+                    $img = $post->image ?? '';
+                    $imgSrc = null;
+                    if (preg_match('/^https?:\/\//i', $img)) {
+                        $imgSrc = $img;
+                    } else {
+                        $candidate = storage_path('app/public/' . ltrim($img, '/'));
+                        if ($img && file_exists($candidate)) {
+                            $imgSrc = asset('storage/' . ltrim($img, '/'));
+                        }
+                        if (!$imgSrc) {
+                            $publicCandidate = public_path(ltrim($img, '/'));
+                            if ($img && file_exists($publicCandidate)) {
+                                $imgSrc = asset('/' . ltrim($img, '/'));
+                            }
+                        }
+                        if (!$imgSrc && $img) {
+                            $pub2 = public_path('images/' . basename($img));
+                            if (file_exists($pub2)) {
+                                $imgSrc = asset('images/' . basename($img));
+                            }
+                        }
+                    }
+                @endphp
+
+                @include('components.post-image', ['image' => $post->image, 'alt' => $post->title, 'class' => 'w-full h-40 object-cover', 'placeholder' => 'w-full h-40 bg-gray-100 flex items-center justify-center text-gray-400'])
                 <div class="p-4">
                     <h3 class="text-lg font-bold mb-2 text-blue-400">{{ $post->title }}</h3>
                     <p class="text-gray-300 text-sm mb-2 truncate">{{ $post->content }}</p>

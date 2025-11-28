@@ -37,7 +37,7 @@
             </div>
 
             {{-- BUY BUTTON --}}
-            <form action="{{ route('pay.stk', $post->id) }}" method="POST">
+            <form action="{{ route('user.posts.pay', $post->id) }}" method="POST">
                 @csrf
 
                 <button type="submit"

@@ -16,15 +16,18 @@ class PostController extends Controller
         return view('user.posts.index', compact('posts'));
     }
 
-    public function show(Post $post)
-    {
-        $haspurchased = Purchase::where('user_id', auth()->id())
-                            ->where('post_id', $post->id)
-                            ->where('status', 'paid')
-                            ->exists();
+    public function show($id)
+{
+    $post = Post::findOrFail($id);
 
-        return view('user.posts.show', compact('post', 'haspurchased'));
-    }
+    // Check if the user has already purchased the post
+    $hasPurchased = Purchase::where('user_id', auth()->id())
+        ->where('post_id', $post->id)
+        ->exists();
+
+    return view('user.posts.show', compact('post', 'hasPurchased'));
+}
+
 
     public function buy(Post $post)
     {

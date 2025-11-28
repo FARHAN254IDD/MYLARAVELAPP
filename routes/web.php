@@ -31,6 +31,10 @@ use App\Http\Controllers\Blogger\{
 use App\Http\Controllers\Tester\DashboardController as TesterDashboardController;
 use App\Http\Controllers\User\{DashboardController as UserDashboardController,
     PostController as UserPostController,
+    ProfileController as UserProfileController,
+    PaymentController as UserPaymentController,
+    PurchaseController as UserPurchaseController,
+
 
 
 };
@@ -68,7 +72,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth', 'user'])->prefix('user')->name('user.')->group(function () {
     Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
 
-    
+
 
     // View all posts
     Route::get('/posts', [UserPostController::class, 'index'])->name('posts');
@@ -76,11 +80,24 @@ Route::middleware(['auth', 'user'])->prefix('user')->name('user.')->group(functi
     // View single post
     Route::get('/posts/{post}', [UserPostController::class, 'show'])->name('posts.show');
 
-    Route::get('/purchases', [UserDashboardController::class, 'purchases'])->name('purchases');
+    Route::get('/purchases', [UserPurchaseController::class, 'index'])->name('purchases');
 
-    Route::get('/profile', [UserDashboardController::class, 'profile'])->name('profile');
+    Route::get('/purchases/{purchase}/receipt', [UserPurchaseController::class, 'downloadReceipt'])->name('user.purchases.receipt');
+
+    Route::get('/profile', [UserProfileController::class, 'index'])->name('profile');
+
+    Route::patch('/profile/update', [UserProfileController::class, 'update'])->name('profile.update');
 
     Route::get('/settings', [UserDashboardController::class, 'settings'])->name('settings');
+
+    Route::post('/posts/{post}/pay', [UserPaymentController::class, 'initiateStk'])->name('posts.pay');
+
+
+
+// MPESA callback was here but must be a public endpoint outside auth groups.
+
+
+
 
 
 
@@ -157,5 +174,9 @@ Route::middleware(['auth', 'user'])->prefix('user')->name('user.')->group(functi
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// Public MPESA callback endpoint (called by Safaricom sandbox/live)
+Route::post('/user/mpesa/callback', [UserPaymentController::class, 'mpesaCallback'])
+    ->name('user.mpesa.callback');
 
 require __DIR__.'/auth.php';

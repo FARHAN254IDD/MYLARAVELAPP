@@ -48,4 +48,9 @@ class User extends Authenticatable
     {
         return $this->role === 'admin';
     }
+
+    public function purchases()
+    {
+        return $this->hasMany(\App\Models\Purchase::class, 'user_id');
+    }
 }
