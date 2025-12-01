@@ -62,6 +62,15 @@
                 <span class="mr-3">⚙️</span> Settings
             </a>
 
+
+
+            <a href="{{ route('user.help') }}"
+   class="group flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-all
+   {{ request()->routeIs('user.help') ? 'bg-indigo-50 text-indigo-600' : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900' }}">
+    <span class="mr-3">❓</span> Help
+</a>
+
+
         </nav>
 
         {{-- User Info + Logout --}}

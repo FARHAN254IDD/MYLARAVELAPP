@@ -3,38 +3,42 @@
 @section('title', 'Settings')
 
 @section('content')
-<div class="max-w-3xl mx-auto py-10">
-    <h2 class="text-2xl font-bold mb-6">Settings</h2>
+<div class="max-w-3xl mx-auto p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
 
-    <div class="mb-4">
-        <label class="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" id="darkModeToggle" class="hidden">
-            <span class="w-12 h-6 bg-gray-300 rounded-full relative">
-                <span class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition"></span>
-            </span>
-            Enable Dark Mode
+    <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+        Appearance Settings
+    </h2>
+
+    <!-- Theme Toggle -->
+    <div class="flex items-center justify-between py-4 border-b border-gray-200 dark:border-gray-700">
+        <span class="text-gray-700 dark:text-gray-300 text-lg">Dark Mode</span>
+
+        <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="themeToggle" class="sr-only peer">
+            <div class="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-indigo-600 dark:bg-gray-600"></div>
+            <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-all
+                peer-checked:translate-x-5"></div>
         </label>
     </div>
+
 </div>
 
 <script>
-    const toggle = document.getElementById('darkModeToggle');
-    const html = document.querySelector('html');
-    const dot = document.querySelector('.dot');
+    // Apply saved theme
+    if (localStorage.getItem("theme") === "dark") {
+        document.documentElement.classList.add("dark");
+        document.getElementById("themeToggle").checked = true;
+    }
 
-    toggle.addEventListener('change', () => {
-        html.classList.toggle('dark');
-        if(html.classList.contains('dark')){
-            localStorage.setItem('darkMode', 'true');
+    // Toggle and save preference
+    document.getElementById("themeToggle").addEventListener("change", function () {
+        if (this.checked) {
+            document.documentElement.classList.add("dark");
+            localStorage.setItem("theme", "dark");
         } else {
-            localStorage.setItem('darkMode', 'false');
+            document.documentElement.classList.remove("dark");
+            localStorage.setItem("theme", "light");
         }
     });
-
-    // Initialize from localStorage
-    if(localStorage.getItem('darkMode') === 'true'){
-        html.classList.add('dark');
-        toggle.checked = true;
-    }
 </script>
 @endsection

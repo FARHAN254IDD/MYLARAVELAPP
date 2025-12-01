@@ -34,6 +34,8 @@ use App\Http\Controllers\User\{DashboardController as UserDashboardController,
     ProfileController as UserProfileController,
     PaymentController as UserPaymentController,
     PurchaseController as UserPurchaseController,
+    SettingsController as UserSettingsController,
+    HelpController as UserHelpController,
 
 
 
@@ -88,9 +90,12 @@ Route::middleware(['auth', 'user'])->prefix('user')->name('user.')->group(functi
 
     Route::patch('/profile/update', [UserProfileController::class, 'update'])->name('profile.update');
 
-    Route::get('/settings', [UserDashboardController::class, 'settings'])->name('settings');
+    Route::get('/settings', [UserSettingsController::class, 'index'])->name('settings');
 
     Route::post('/posts/{post}/pay', [UserPaymentController::class, 'initiateStk'])->name('posts.pay');
+
+    Route::get('user/help', [UserHelpController::class, 'index'])->name('help');
+    Route::post('help', [UserHelpController::class, 'submit'])->name('help.submit');
 
 
 
@@ -159,7 +164,9 @@ Route::middleware(['auth', 'user'])->prefix('user')->name('user.')->group(functi
 
         // profile
         Route::get('/profile', [BloggerProfileController::class, 'index'])->name('profile');
+        Route::patch('/profile/update', [BloggerProfileController::class, 'update'])->name('profile.update');
          Route::post('/notifications/clear', [NotificationController::class, 'clear'])->name('notifications.clear');
+
 
 
     });

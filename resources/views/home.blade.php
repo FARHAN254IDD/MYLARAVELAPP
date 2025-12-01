@@ -9,7 +9,7 @@ url('https://source.unsplash.com/1600x900/?laptop,workspace');">
 
     <div class="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center">
         <div class="text-center text-white">
-            <h1 class="text-5xl font-bold mb-4">Welcome to MyBlog</h1>
+            <h1 class="text-5xl font-bold mb-4">Welcome to MyPosts</h1>
             <p class="text-lg mb-6">Discover stories, tutorials, and tech insights from developers like you.</p>
             <a href="/posts" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold">Explore Posts</a>
         </div>
